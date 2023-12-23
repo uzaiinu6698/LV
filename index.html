@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.3s;
+        }
+        .calculator {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s;
+        }
+        @media (max-width: 600px) {
+            .calculator {
+                margin: 20px;
+            }
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h2>カウント計算機</h2>
+
+    <div class="form-group">
+        <label for="mode-select">モード選択：</label>
+        <select id="mode-select" onchange="modeChanged()">
+            <option value="count50">50カウントモード</option>
+            <option value="integer">整数モード</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="number-input">数値入力：</label>
+        <input type="text" id="number-input" value="0-0">
+    </div>
+
+    <button onclick="calculate()">計算</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function modeChanged() {
+    var mode = document.getElementById("mode-select").value;
+    if (mode === "integer") {
+        document.getElementById("number-input").value = "0";
+    } else {
+        document.getElementById("number-input").value = "0-0";
+    }
+}
+
+function calculate() {
+    var mode = document.getElementById("mode-select").value;
+    var input = document.getElementById("number-input").value;
+    var resultText = "";
+
+    if (mode === "count50") {
+        var parts = input.split("-");
+        if (parts.length === 2) {
+            var cycles = parseInt(parts[0]);
+            var remainder = parseInt(parts[1]);
+            if (!isNaN(cycles) && !isNaN(remainder) && cycles >= 0 && cycles <= 999 && remainder >= 0 && remainder <= 50) {
+                resultText = (cycles * 50 + remainder).toString();
+            } else {
+                resultText = "無効な入力";
+            }
+        } else {
+            resultText = "無効な入力";
+        }
+    } else if (mode === "integer") {
+        var number = parseInt(input);
+        if (!isNaN(number) && number >= 0 && number <= 9999) {
+            var totalCycles = Math.floor(number / 50);
+            var position = number % 50;
+            resultText = totalCycles + "-" + position;
+        } else {
+            resultText = "無効な入力";
+        }
+    }
+
+    document.getElementById("result").innerHTML = "結果： " + resultText;
+}
+</script>
+
+</body>
+</html>

@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode {
             background-color: #282c34;
@@ -78,6 +78,12 @@
             top: 20px;
             right: 20px;
             cursor: pointer;
+            font-size: 18px;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+        body.dark-mode .toggle-mode {
+            color: #4f9af7;
         }
     </style>
 </head>
@@ -104,18 +110,52 @@
     <div id="result"></div>
 </div>
 
-<div class="toggle-mode" onclick="toggleDarkMode()">
-    <img id="mode-icon" src="light_mode_icon.png" alt="Toggle Dark Mode">
-</div>
+<div class="toggle-mode" onclick="toggleDarkMode()">ダークモード切り替え</div>
 
 <script>
-// 既存のJavaScriptコードはそのまま使用してください。
-// ここにダークモード切り替えのための追加のJavaScriptコードを記述します。
+function modeChanged() {
+    var mode = document.getElementById("mode-select").value;
+    if (mode === "integer") {
+        document.getElementById("number-input").value = "0";
+    } else {
+        document.getElementById("number-input").value = "0-0";
+    }
+}
+
+function calculate() {
+    var mode = document.getElementById("mode-select").value;
+    var input = document.getElementById("number-input").value;
+    var resultText = "";
+
+    if (mode === "count50") {
+        var parts = input.split("-");
+        if (parts.length === 2) {
+            var cycles = parseInt(parts[0]);
+            var remainder = parseInt(parts[1]);
+            if (!isNaN(cycles) && !isNaN(remainder) && cycles >= 0 && cycles <= 999 && remainder >= 0 && remainder <= 50) {
+                resultText = (cycles * 50 + remainder).toString();
+            } else {
+                resultText = "無効な入力";
+            }
+        } else {
+            resultText = "無効な入力";
+        }
+    } else if (mode === "integer") {
+        var number = parseInt(input);
+        if (!isNaN(number) && number >= 0 && number <= 9999) {
+            var totalCycles = Math.floor(number / 50);
+            var position = number % 50;
+            resultText = totalCycles + "-" + position;
+        } else {
+            resultText = "無効な入力";
+        }
+    }
+
+    document.getElementById("result").innerHTML = "結果： " + resultText;
+}
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
-    var iconSrc = document.body.classList.contains('dark-mode') ? 'dark_mode_icon.png' : 'light_mode_icon.png';
-    document.getElementById('mode-icon').src = iconSrc;
 }
 </script>
 
